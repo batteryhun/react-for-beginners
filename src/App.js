@@ -1,54 +1,21 @@
 import styled, { keyframes } from "styled-components";
 
-const rotationAnimation = keyframes`
-  0% {
-    transform:rotate(0deg);
-    border-radius: 0px;
-  }
-  50% {
-    transform:rotate(360deg);
-    border-radius: 100px;
-  }
-  100% {
-    transform:rotate(0deg);
-    border-radius: 0px;
-  }
-`;
 const Father = styled.div`
   display: flex;
-`;
-const Emoji = styled.span`
-  font-size: 100px;
-`;
-const Box = styled.div`
-  height: 200px;
-  width: 200px;
-  color: white;
-  background-color: ${(props) => props.bgColor};
-  animation: ${rotationAnimation} 1s linear infinite;
-  display: flex;
+  height: 100vh;
   justify-content: center;
   align-items: center;
-  ${Emoji} {
-    font-size: 100px;
-    &:hover {
-      font-size: 50px;
-    }
-  }
+  color: ${(props) => props.theme.textColor};
+  background-color: ${(props) => props.theme.bgColor};
 `;
-
-const Circle = styled(Box)`
-  border-radius: 50%;
+const Box = styled.div`
+  font-size: 100px;
 `;
 
 function App() {
   return (
     <Father>
-      <Box bgColor="tomato">
-        <Emoji>🤗</Emoji>
-      </Box>
-      <Emoji>🤗</Emoji>
-      <Circle bgColor="teal" />
+      <Box>Hello</Box>
     </Father>
   );
 }
