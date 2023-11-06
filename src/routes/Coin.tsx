@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
+import { Helmet } from "react-helmet";
 import {
   Link,
   Route,
@@ -112,7 +112,7 @@ interface InfoData {
   first_data_at: string;
   last_data_at: string;
 }
-interface PriceData {
+interface TickersData {
   id: string;
   name: string;
   symbol: string;
@@ -150,19 +150,26 @@ function Coin() {
   const { state } = useLocation<RouteState>();
   const priceMatch = useRouteMatch("/:coiId/price");
   const chartMatch = useRouteMatch("/:coinId/chart");
-  const { isLoading: infoLoading, data: info } = useQuery(
+  const { isLoading: infoLoading, data: info } = useQuery<InfoData>(
     ["info", coinId],
     () => fetchCoinInfo(coinId)
   );
-  const { isLoading: tickersLoading, data: tickersData } = useQuery(
-    ["tickers", coinId],
-    () => fetchCoinTickers(coinId)
-  );
+  const { isLoading: tickersLoading, data: tickersData } =
+    useQuery<TickersData>(["tickers", coinId], () => fetchCoinTickers(coinId), {
+      refetchInterval: 5000,
+    });
   const loading = infoLoading && tickersLoading;
   return (
     <Container>
+      <Helmet>
+        <title>
+          {state?.name ? state.name : loading ? "Loading..." : info?.name}
+        </title>
+      </Helmet>
       <Header>
-        <Title>{state?.name || "Loading"}</Title>
+        <Title>
+          {state?.name ? state.name : loading ? "Loading..." : info?.name}
+        </Title>
       </Header>
       {loading ? (
         <Loader>Loading...</Loader>
@@ -178,8 +185,8 @@ function Coin() {
               <span>${info?.symbol}</span>
             </OverviewItem>
             <OverviewItem>
-              <span>Open Source:</span>
-              <span>{info?.open_source ? "Yes" : "No"}</span>
+              <span>Price:</span>
+              <span>{tickersData?.quotes.USD.price.toFixed(2)} USD</span>
             </OverviewItem>
           </Overview>
           <Description>{info?.description}</Description>
